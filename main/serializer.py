@@ -6,12 +6,13 @@ from .models import UserProfile
 class UserprofileSerializer(serializers.ModelSerializer):
     class Meta :
         model = UserProfile
-        fields = ("weight", "height", "about", "license_number", "created", "updated", "id", "users")
+        fields = ("weight", "height", "license_number", "created", "updated")
+        # exclude = ('users',)
 
 
 class UserSerializer(serializers.ModelSerializer):
 
-    profile = UserprofileSerializer(many=True,required=True)
+    profile = UserprofileSerializer(many=False)
 
     class Meta:
         model = User
