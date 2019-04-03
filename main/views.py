@@ -28,7 +28,7 @@ class UserListview(viewsets.ModelViewSet):
 
 	def destroy(self, request, *args, **kwargs):
 		try:
-			instance = self.get_object(*args)
+			instance = self.get_object()
 			self.perform_destroy(instance)
 			instance.delete()
 		except Http404:
