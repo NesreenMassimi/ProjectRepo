@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from main.models import User
 from main.serializer import UserSerializer
+from main.serializer import UserUpdateSerializer
 from rest_framework import viewsets
 from django.http import Http404
 
@@ -34,6 +35,18 @@ class UserListview(viewsets.ModelViewSet):
 		except Http404:
 			pass
 		return Response(status=status.HTTP_204_NO_CONTENT)
+
+	def update(self, request, *args, **kwargs):
+		try :
+			instance = self.get_object()
+
+		except Http404:
+			pass
+		serializer = UserUpdateSerializer(instance, data=request.data)
+		serializer.is_valid(raise_exception=True)
+		self.perform_update(serializer)
+		return Response(serializer.data,status=status.HTTP_200_OK)
+
 
 
 
