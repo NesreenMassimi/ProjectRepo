@@ -10,7 +10,8 @@ users = UserListview.as_view({
 user_details = UserListview.as_view(
  {
      'get' : 'retrieve',
-     'delete': 'destroy'
+     'delete': 'destroy',
+     'put' : 'update'
 
  })
 
