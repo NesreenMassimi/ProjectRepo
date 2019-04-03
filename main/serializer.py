@@ -28,12 +28,35 @@ class UserSerializer(serializers.ModelSerializer):
         UserProfile.objects.create(user=user, **profile_data)
         return user
 
+    def update(self,validated_data ,**kwargs):
+        instance = User(**validated_data)
+        instance.email = instance.get('email',instance.email)
+        instance.first_name = instance.get('first_name',instance.first_name)
+        instance.last_name = instance.get('last_name',instance.last_name)
+        instance.password = instance.get('password',instance.password)
+        instance.user_type = instance.get('user_type',instance.user_type)
+        instance.updated = instance.get('updated',instance.updated)
+
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response['profile'] = UserprofileSerializer(instance.profile).data
         return response
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude =('created','profile')
+
+    def update(self, validated_data,kwargs):
+
+        instance = User(validated_data)
+        instance.email = instance.get('email', instance.email)
+        instance.first_name = instance.get('first_name', instance.first_name)
+        instance.last_name = instance.get('last_name', instance.last_name)
+        instance.password = instance.get('password', instance.password)
+        instance.user_type = instance.get('user_type', instance.user_type)
+        instance.updated = instance.get('updated', instance.updated)
 
 
 
