@@ -45,9 +45,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
+    class Meta :
         model = User
-        exclude =('created','profile')
+        exclude = ('created','profile')
+
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        exclude =('id', 'created')
+
+
+
+
+
 
     def update(self, validated_data,kwargs):
 
@@ -58,8 +69,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.password = instance.get('password', instance.password)
         instance.user_type = instance.get('user_type', instance.user_type)
         instance.updated = instance.get('updated', instance.updated)
-
-
 
 
 

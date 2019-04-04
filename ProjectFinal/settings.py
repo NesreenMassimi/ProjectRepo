@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test_med_sol_upgrade',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '16001700',
         'HOST': '127.0.0.1',
         'PORT': '3306'
     
