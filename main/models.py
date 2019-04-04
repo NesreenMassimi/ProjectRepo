@@ -41,7 +41,9 @@ class User(AbstractBaseUser):
     user_type = models.CharField(max_length=45)
     created = models.DateField(blank=True, null=True)
     updated = models.DateField(blank=True, null=True)
+    #profile = models.OneToOneField('UserProfile', on_delete=models.CASCADE, related_name='User', blank=True, null=True)
     profile = models.OneToOneField('UserProfile', on_delete=models.CASCADE, related_name='users')
+    education = models.OneToOneField('UserEducation',on_delete=models.CASCADE,related_name='user')
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -53,12 +55,12 @@ class User(AbstractBaseUser):
 
 
 class UserEducation(models.Model):
-    institution_name = models.IntegerField()
+    institution_name = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
     created = models.DateField()
     updated = models.DateField()
-    user = models.ForeignKey(User, models.DO_NOTHING)
+   # user = models.ForeignKey(User, models.DO_NOTHING)
 
     class Meta:
         managed = False

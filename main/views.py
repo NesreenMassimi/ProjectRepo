@@ -8,7 +8,6 @@ from rest_framework import viewsets
 from django.http import Http404
 
 
-
 # Create your views here.
 
 class UserListview(viewsets.ModelViewSet):
@@ -38,10 +37,10 @@ class UserListview(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def update(self, request, *args, **kwargs):
-        try :
+        try:
             instance = self.get_object()
         except Http404:
-          return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserUpdateSerializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -50,27 +49,54 @@ class UserListview(viewsets.ModelViewSet):
 
 
 class UserProfileView(viewsets.ModelViewSet):
-        queryset = UserProfile.objects.all()
-        serializer_class = UserProfileUpdateSerializer
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileUpdateSerializer
 
-        def update(self, request, *args, **kwargs):
-            try:
-                instance = self.get_object()
-            except Http404:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+    def update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+        except Http404:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-            serializer = UserProfileUpdateSerializer(instance, data=request.data)
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-
-
+        serializer = UserProfileUpdateSerializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
 
+class UserEducationView(viewsets.ModelViewSet):
+    queryset = UserEducation.objects.all()
+    serializer_class = UserEducationSerializer
 
+    def list(self, request, **kwargs):
 
+        all_users = UserEducation.objects.all()
+        serializer = UserEducationSerializer(all_users, many=True)
+        return Response(serializer.data)
 
+    def create(self, request, **kwargs):
+        serializer = UserEducationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+        except Http404:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
+        serializer = UserEducationUpdateSerializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
-
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            instance.delete()
+        except Http404:
+            pass
+        return Response(status=status.HTTP_204_NO_CONTENT)
