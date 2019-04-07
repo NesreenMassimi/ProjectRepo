@@ -59,13 +59,15 @@ class UserProfileView(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileUpdateSerializer
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request, pk, **kwargs):
         try:
-            instance = self.get_object()
+            user = User.objects.get(pk = pk)
+            
+            #instance = self.get_object()
         except Http404:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = UserProfileUpdateSerializer(instance, data=request.data)
+        serializer = UserProfileUpdateSerializer(user.profile, data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)

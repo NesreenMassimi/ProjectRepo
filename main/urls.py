@@ -20,6 +20,7 @@ user_details = UserListview.as_view(
 profile_details = UserProfileView.as_view (
     {
         'put' : 'update'
+
 })
 
 educations = UserEducationView.as_view({
@@ -35,7 +36,7 @@ education_details = UserEducationView.as_view({
 
 urlpatterns = [path('Users/', users,name='users'),
                path('Users/<int:pk>/',user_details,name='user_details'),
-               path('profiles/<int:pk>/', profile_details,name='profile_details'),
+               path('Users/<int:pk>/profile/', profile_details,name='profile_details'),
                path('Users/<int:pk>/education', educations, name='educations'),
                path('Users/education/<int:pk>/', education_details, name='education_details')
                ]
