@@ -12,8 +12,7 @@ class Post(models.Model):
     content = models.TextField()
     created = models.DateField(blank=True, null=True)
     updated = models.DateField(blank=True, null=True)
-    #id = models.AutoField(unique=True)
-    speciality = models.ForeignKey('Speciality', models.DO_NOTHING)
+    speciality = models.ForeignKey('Speciality', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -23,7 +22,6 @@ class Post(models.Model):
 class Speciality(models.Model):
     code = models.CharField(unique=True, max_length=45)
     name = models.CharField(max_length=200)
-    #category = models.ForeignKey('SpecialityCategory', models.DO_NOTHING)
     created = models.DateTimeField()
     updated = models.DateTimeField(blank=True, null=True)
 
@@ -34,33 +32,29 @@ class Speciality(models.Model):
 
 class User(AbstractBaseUser):
     first_name = models.CharField(max_length=45)
-    last_name = models.CharField(max_length=45, blank=True, null=True)
-    email = models.EmailField(unique=True, max_length=45)
-    #password = models.CharField(max_length=45)
-    #last_login_date = models.DateTimeField(blank=True, null=True)
+    last_name = models.CharField(max_length=45)
+    email = models.CharField(unique=True, max_length=45)
+   # password = models.CharField(max_length=128)
     user_type = models.CharField(max_length=45)
-    created = models.DateField(blank=True, null=True)
-    updated = models.DateField(blank=True, null=True)
-    #profile = models.OneToOneField('UserProfile', on_delete=models.CASCADE, related_name='User', blank=True, null=True)
-    profile = models.OneToOneField('UserProfile', on_delete=models.CASCADE, related_name='users')
-    education = models.OneToOneField('UserEducation',on_delete=models.CASCADE,related_name='user')
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+    last_login = models.DateTimeField(blank=True, null=True)
+    profile = models.OneToOneField('UserProfile', models.CASCADE,related_name='profile' )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-
-
 
     class Meta:
         managed = True
         db_table = 'user'
 
-
 class UserEducation(models.Model):
-    institution_name = models.TextField()
+
+    institution_name = models.CharField(max_length=45)
     start_date = models.DateField()
     end_date = models.DateField()
-    created = models.DateField()
-    updated = models.DateField()
-   # user = models.ForeignKey(User, models.DO_NOTHING)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+    user = models.ForeignKey(User,models.DO_NOTHING,related_name='educations' ,blank=True, null=True)
 
     class Meta:
         managed = False
@@ -72,11 +66,9 @@ class UserProfile(models.Model):
     height = models.FloatField()
     about = models.TextField(blank=True, null=True)
     license_number = models.IntegerField(unique=True)
-    created = models.DateField(blank=True, null=True)
-    updated = models.DateField(blank=True, null=True)
-    # users = models.ForeignKey(User, related_name='profile', on_delete=models.CASCADE)
-    # users = models.OneToOneField(User, on_delete=models.CASCADE, to_field="profile")
-
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+    users = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

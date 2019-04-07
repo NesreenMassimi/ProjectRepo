@@ -7,47 +7,47 @@ from .models import UserEducation
 class UserprofileSerializer(serializers.ModelSerializer):
     class Meta :
         model = UserProfile
-        fields = ("weight", "height", "license_number", "created", "updated")
+        fields = ('id', "weight", "height","about", "license_number", "created", "updated")
         # exclude = ('users',)
 
 class UserEducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserEducation
-        fields = ('id', 'institution_name', 'start_date', 'end_date', 'created', 'updated','user')
+        fields = ('id', 'institution_name', 'start_date', 'end_date', 'created', 'updated','user_id')
 
-        def create(self,validated_data):
-            edu = UserEducation(**validated_data)
-            edu.save()
-            return edu
 
 class UserSerializer(serializers.ModelSerializer):
 
-    profile = UserprofileSerializer(many=False)
-    education = UserEducationSerializer(many=True)
-
+    profile = UserprofileSerializer(many=False,required=True)
+    educations = UserEducationSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'password', 'user_type', 'created', 'updated', 'profile',
-                  'education')
+        fields = ('id', 'first_name', 'last_name', 'email', 'password', 'user_type', 'created', 'updated','profile', 'profile_id','educations')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
-        education_data = validated_data.pop('education')
+        education_data = validated_data.pop('educations')
         password = validated_data.pop('password')
-        user = User(**validated_data)
+        user = User.objects.create(**validated_data)
         user.set_password(password)
         user.save()
-        for education_data in education_data:
-            education = UserEducation.objects.create(user=user, **education_data)
-        UserProfile.objects.create(user=user, **profile_data)
+        profile_data['users_id'] = user.id
+        prof = UserProfile.objects.create(**profile_data)
+        user.profile_id = prof.id
+        print(user.profile_id)
+        for edu in education_data:
+            edu['user_id']= user.id
         return user
 
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['profile'] = UserprofileSerializer(instance.profile).data
-        return response
+    '''def createed(self,validated_data):
+        education_data = validated_data.pop('education')
+        for education_data in education_data:
+            user = User(**validated_data)
+            UserEducation.objects.create(user=user, **education_data)
+            return user'''
+
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -65,7 +65,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
 class UserEducationUpdateSerializer(serializers.ModelSerializer):
     class Meta :
         model = UserEducation
-        exclude =('id','created')
+        exclude =('id','created','user')
 
 
 

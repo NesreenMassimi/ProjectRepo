@@ -17,7 +17,7 @@ class UserListview(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
 
         all_users = User.objects.all()
-        serializer = UserSerializer(all_users, many=True)
+        serializer = UserSerializer(instance = all_users,many=True)
         return Response(serializer.data)
 
     def create(self, request, **kwargs):
@@ -47,6 +47,13 @@ class UserListview(viewsets.ModelViewSet):
         self.perform_update(serializer)
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['profile'] = UserprofileSerializer(instance.profile).data
+
+        # response['education'] = UserEducationSerializer(instance.education).data
+        return response
+
 
 class UserProfileView(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -70,13 +77,14 @@ class UserEducationView(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
 
-        all_users = UserEducation.objects.all()
+        all_users = UserEducation.objects.get()
         serializer = UserEducationSerializer(all_users, many=True)
         return Response(serializer.data)
 
-    def create(self, request, **kwargs):
+    def create(self, request,pk):
         serializer = UserEducationSerializer(data=request.data)
         if serializer.is_valid():
+            serializer.validated_data['user_id'] = pk
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
