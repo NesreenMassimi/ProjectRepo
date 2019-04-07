@@ -6,9 +6,15 @@ from main.models import UserEducation
 from main.serializer import *
 from rest_framework import viewsets
 from django.http import Http404
+from django.contrib.auth import views as auth_views
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 
 # Create your views here.
+
+
 
 class UserListview(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -46,6 +52,18 @@ class UserListview(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+
+
+    def login(self,request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = User.objects.get(email=email)
+        if user.check_password(password):
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
