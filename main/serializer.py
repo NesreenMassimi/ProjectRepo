@@ -7,7 +7,7 @@ from .models import UserEducation
 class UserprofileSerializer(serializers.ModelSerializer):
     class Meta :
         model = UserProfile
-        fields = ('id', "weight", "height","about", "license_number", "created", "updated")
+        fields = ('id', "weight", "height","about", "license_number", "created", "updated","users_id")
         # exclude = ('users',)
 
 class UserEducationSerializer(serializers.ModelSerializer):
@@ -19,11 +19,11 @@ class UserEducationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     profile = UserprofileSerializer(many=False,required=True)
-    educations = UserEducationSerializer(many=True)
+    educations = UserEducationSerializer(many=True,required=False)
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'password', 'user_type', 'created', 'updated','profile', 'profile_id','educations')
+        fields = ('id', 'first_name', 'last_name', 'email', 'password', 'user_type', 'created', 'updated','profile','educations')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -36,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
         profile_data['users_id'] = user.id
         prof = UserProfile.objects.create(**profile_data)
         user.profile_id = prof.id
-        print(user.profile_id)
+        #print(user.profile_id)
         for edu in education_data:
             edu['user_id']= user.id
         return user

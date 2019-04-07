@@ -39,7 +39,8 @@ class User(AbstractBaseUser):
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
     last_login = models.DateTimeField(blank=True, null=True)
-    profile = models.OneToOneField('UserProfile', models.CASCADE,related_name='profile' )
+    #profiles = models.OneToOneField('UserProfile',models.CASCADE,related_name='profile')
+    #profile = models.OneToOneField('UserProfile', models.CASCADE,related_name='profile' )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -68,7 +69,7 @@ class UserProfile(models.Model):
     license_number = models.IntegerField(unique=True)
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
-    users = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    users = models.OneToOneField(User, models.DO_NOTHING, blank=True, null=True,related_name='profile')
 
     class Meta:
         managed = False
