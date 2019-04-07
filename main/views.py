@@ -62,7 +62,7 @@ class UserProfileView(viewsets.ModelViewSet):
     def update(self, request, pk, **kwargs):
         try:
             user = User.objects.get(pk = pk)
-            
+
             #instance = self.get_object()
         except Http404:
             return Response(status=status.HTTP_404_NOT_FOUND)
