@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
-        education_data = validated_data.pop('educations')
+        #education_data = validated_data.pop('educations')
         password = validated_data.pop('password')
         user = User.objects.create(**validated_data)
         user.set_password(password)
@@ -37,8 +37,8 @@ class UserSerializer(serializers.ModelSerializer):
         prof = UserProfile.objects.create(**profile_data)
         user.profile_id = prof.id
         #print(user.profile_id)
-        for edu in education_data:
-            edu['user_id']= user.id
+        #for edu in user.educations:
+            #edu['user_id']= user.id
         return user
 
     '''def createed(self,validated_data):
