@@ -38,7 +38,7 @@ class User(AbstractBaseUser):
     user_type = models.CharField(max_length=45)
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
-    last_login = models.DateTimeField(auto_now=True,blank=True, null=True)
+    last_login = models.DateTimeField(blank=True, null=True)
     #profiles = models.OneToOneField('UserProfile',models.CASCADE,related_name='profile')
     #profile = models.OneToOneField('UserProfile', models.CASCADE,related_name='profile' )
     USERNAME_FIELD = 'email'
