@@ -112,7 +112,8 @@ class UserEducationView(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         try:
-            instance = self.get_object()
+            instance=UserEducation.objects.get(pk =kwargs['pk2'])
+            #instance = self.get_object()
         except Http404:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -123,11 +124,13 @@ class UserEducationView(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         try:
-            instance = self.get_object()
+            instance=UserEducation.objects.get(pk =kwargs['pk2'])
+            #instance = self.get_object()
             self.perform_destroy(instance)
             instance.delete()
         except Http404:
-            pass
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
