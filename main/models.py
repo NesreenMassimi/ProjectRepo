@@ -10,19 +10,6 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 
 
-'''class MyUserManager(BaseUserManager):
-    def create_user(self, email, date_of_birth, password=None):
-        if not email:
-            raise ValueError('Users must have an email address')
-        user = self.model(
-            email=self.normalize_email(email),)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-'''
-
-
-
 class Post(models.Model):
     content = models.TextField()
     created = models.DateField(blank=True, null=True)
@@ -49,13 +36,10 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
     email = models.CharField(unique=True, max_length=45)
-   # password = models.CharField(max_length=128)
     user_type = models.CharField(max_length=45)
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
     last_login = models.DateTimeField(blank=True, null=True)
-    #profiles = models.OneToOneField('UserProfile',models.CASCADE,related_name='profile')
-    #profile = models.OneToOneField('UserProfile', models.CASCADE,related_name='profile' )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

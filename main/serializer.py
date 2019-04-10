@@ -36,7 +36,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
-        #education_data = validated_data.pop('educations')
         password = validated_data.pop('password')
         user = User.objects.create(**validated_data)
         user.set_password(password)
@@ -44,18 +43,7 @@ class UserSerializer(serializers.ModelSerializer):
         profile_data['users_id'] = user.id
         prof = UserProfile.objects.create(**profile_data)
         user.profile_id = prof.id
-        #print(user.profile_id)
-        #for edu in user.educations:
-            #edu['user_id']= user.id
         return user
-
-    '''def createed(self,validated_data):
-        education_data = validated_data.pop('education')
-        for education_data in education_data:
-            user = User(**validated_data)
-            UserEducation.objects.create(user=user, **education_data)
-            return user'''
-
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
