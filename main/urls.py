@@ -3,6 +3,7 @@ from .views import UserListview
 from .views import UserProfileView
 from .views import UserEducationView
 from .views import LoginView
+from .views import ListUsersView
 from rest_framework_jwt.views import obtain_jwt_token
 
 login =LoginView.as_view({
@@ -11,11 +12,12 @@ login =LoginView.as_view({
 
 
 })
-users = UserListview.as_view({
+
+user = ListUsersView.as_view({
     'get': 'list',
     'post': 'create'
-})
 
+})
 user_details = UserListview.as_view(
  {
      'get' : 'retrieve',
@@ -41,7 +43,7 @@ education_details = UserEducationView.as_view({
 
 })
 
-urlpatterns = [path('Users/', users,name='users'),
+urlpatterns = [path('Users/', user,name='user'),
                path('Users/<int:pk>/',user_details,name='user_details'),
                path('Users/<int:pk>/profile/', profile_details,name='profile_details'),
                path('Users/<int:pk>/education', educations, name='educations'),

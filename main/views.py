@@ -5,6 +5,7 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework import permissions
 from django.utils import timezone
 from rest_framework.response import Response
+from main.permissions import IsOwnerOrReadOnly
 from main.models import User
 from main.models import UserProfile
 from main.models import UserEducation
@@ -16,13 +17,11 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 # Create your views here.
 
-
-
-class UserListview(viewsets.ModelViewSet):
+class ListUsersView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    authentication_classes = (JSONWebTokenAuthentication, )
+    permission_classes = (permissions.AllowAny,)
+
 
     def list(self, request, **kwargs):
 
@@ -36,6 +35,13 @@ class UserListview(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserListview(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly)
+    authentication_classes = (JSONWebTokenAuthentication, )
 
     def destroy(self, request, *args, **kwargs):
         try:
@@ -57,16 +63,6 @@ class UserListview(viewsets.ModelViewSet):
         self.perform_update(serializer)
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
-    ''' def login(self,request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = User.objects.get(email=email)
-        if user.check_password(password) :
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)'''
-
-
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response['profile'] = UserprofileSerializer(instance.profile).data
@@ -78,15 +74,13 @@ class UserListview(viewsets.ModelViewSet):
 class UserProfileView(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileUpdateSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,IsOwnerOrReadOnly)
     authentication_classes = (JSONWebTokenAuthentication, )
-
 
     def update(self, request, pk, **kwargs):
         try:
             user = User.objects.get(pk = pk)
 
-            #instance = self.get_object()
         except Http404:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -99,11 +93,8 @@ class UserProfileView(viewsets.ModelViewSet):
 class UserEducationView(viewsets.ModelViewSet):
     queryset = UserEducation.objects.all()
     serializer_class = UserEducationSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly)
     authentication_classes = (JSONWebTokenAuthentication, )
-
-
-
 
     def list(self, request, **kwargs):
 
@@ -148,14 +139,18 @@ class LoginView(viewsets.ModelViewSet):
 
         email = request.data.get("email")
         password = request.data.get("password")
-        #user = authenticate(request, email=email, password=password)
+        #user = authenticate(request, username=email, password = password)
         user = User.objects.get(email=email)
-        user.last_login= timezone.now()
+        print (user.email)
+        print (user.password)
+        print(password)
         if user.check_password(password):
+            print(user.password)
 
             # login saves the user’s ID in the session,
             # using Django’s session framework.
             login(request, user)
+            user.last_login = timezone.now()
             serializer = TokenSerializer(data={
                 "token": jwt_encode_handler(
                     jwt_payload_handler(user)

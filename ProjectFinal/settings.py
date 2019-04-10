@@ -30,7 +30,7 @@ SECRET_KEY = 'hue(_ro(ffvh@i58wpwrawx%xg8)2c^p&26ba#9l$%+r61c1l$'
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
-
+AUTH_USER_MODEL = 'main.User'
 
 # Application definition
 
@@ -85,11 +85,11 @@ JWT_AUTH = {
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LEEWAY': 0,
-    'JWT_EXPIRATION_DELTA': timedelta(300),
+    'JWT_EXPIRATION_DELTA': timedelta(1),
     'JWT_AUDIENCE': None,
     'JWT_ISSUER': None,
 
-    'JWT_ALLOW_REFRESH': False,
+    'JWT_ALLOW_REFRESH': True,
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
 
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',

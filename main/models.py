@@ -7,6 +7,21 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager
+
+
+'''class MyUserManager(BaseUserManager):
+    def create_user(self, email, date_of_birth, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(
+            email=self.normalize_email(email),)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+'''
+
+
 
 class Post(models.Model):
     content = models.TextField()
@@ -44,6 +59,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    objects = BaseUserManager()
     class Meta:
         managed = True
         db_table = 'user'

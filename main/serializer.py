@@ -4,6 +4,13 @@ from .models import UserProfile
 from .models import UserEducation
 
 
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=('token',)
+    token = serializers.CharField(max_length=255)
+
+
 class UserprofileSerializer(serializers.ModelSerializer):
     class Meta :
         model = UserProfile
@@ -24,7 +31,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'email', 'password', 'user_type', 'created', 'updated','last_login','profile','educations')
-        extra_kwargs = {'password': {'write_only': True}}
+        #extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs={'id':{'read_only':True},'password':{'write_only':True}}
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
