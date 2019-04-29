@@ -29,7 +29,7 @@ SECRET_KEY = 'hue(_ro(ffvh@i58wpwrawx%xg8)2c^p&26ba#9l$%+r61c1l$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','0.0.0.0']
 AUTH_USER_MODEL = 'main.User'
 
 # Application definition
