@@ -138,7 +138,7 @@ WSGI_APPLICATION = 'ProjectFinal.wsgi.application'
 DATABASES = {
       'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test_med_sol_upgrade',
+        'NAME': 'test',
         'USER': 'root',
         'PASSWORD': '16001700',
         'HOST': '127.0.0.1',
