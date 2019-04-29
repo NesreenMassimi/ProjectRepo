@@ -144,12 +144,7 @@ class LoginView(viewsets.ModelViewSet):
         password = request.data.get("password")
         #user = authenticate(request, username=email, password = password)
         user = User.objects.get(email=email)
-        print (user.email)
-        print (user.password)
-        print(password)
         if user.check_password(password):
-            print(user.password)
-
             # login saves the user’s ID in the session,
             # using Django’s session framework.
             login(request, user)
